@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
-
 /**
  *
  */
@@ -19,9 +18,14 @@ public:
 
 	virtual void Init() override;
 
+	UFUNCTION(BlueprintCallable	)
+		void LoadMenu();
+
 	UFUNCTION(Exec)
 		void Host();
 
 	UFUNCTION(Exec)
 		void Join(const FString& Address);
+private:
+	TSubclassOf<class UUserWidget> MenuClass;
 };

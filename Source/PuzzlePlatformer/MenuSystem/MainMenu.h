@@ -40,6 +40,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* JoinGameButton;
 
+	UPROPERTY(meta = (BindWidget))
+		class UButton* ExitButton;
+
 	UFUNCTION()
 		void HostServer();
 
@@ -51,4 +54,7 @@ private:
 
 	UFUNCTION()
 		void OpenMainMenu();
+
+	UFUNCTION()
+		void ExitGame();
 };

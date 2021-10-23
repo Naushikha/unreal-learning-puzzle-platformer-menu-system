@@ -8,11 +8,16 @@
 #include "Blueprint/UserWidget.h"
 
 #include "MenuSystem/MainMenu.h"
+#include "MenuSystem/MenuWidget.h"
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitializer& ObjectInitializer) {
 	ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
 	if (!ensure(MenuBPClass.Class != nullptr)) return;
 	MenuClass = MenuBPClass.Class;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> InGameMenuBPClass(TEXT("/Game/MenuSystem/WBP_GameMenu"));
+	if (!ensure(InGameMenuBPClass.Class != nullptr)) return;
+	InGameMenuClass = InGameMenuBPClass.Class;
 }
 
 void UPuzzlePlatformsGameInstance::Init() {
@@ -29,6 +34,17 @@ void UPuzzlePlatformsGameInstance::LoadMenu() {
 	Menu->Setup();
 
 	Menu->SetMenuInterface(this);
+}
+
+void UPuzzlePlatformsGameInstance::InGameLoadMenu() {
+	if (!ensure(InGameMenuClass != nullptr)) return;
+
+	UMenuWidget* nMenu = CreateWidget<UMenuWidget>(this, InGameMenuClass);
+	if (!ensure(nMenu != nullptr)) return;
+
+	nMenu->Setup();
+
+	nMenu->SetMenuInterface(this);
 }
 
 void UPuzzlePlatformsGameInstance::Host() {
@@ -61,4 +77,20 @@ void UPuzzlePlatformsGameInstance::Join(const FString& Address) {
 	if (!ensure(PlayerController != nullptr)) return;
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}
+
+void UPuzzlePlatformsGameInstance::QuitGame() {
+	UWorld* World = GetWorld();
+	if (!ensure(World != nullptr)) return;
+
+	// Need to check if it's a server or a client
+	//if (World->IsServer()) {
+	//	World->ServerTravel("/Game/MenuSystem/MainMenu"); // Listen is required for others to connect
+	//}
+	//else {
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+	if (!ensure(PlayerController != nullptr)) return;
+
+	PlayerController->ClientTravel("/Game/MenuSystem/MainMenu", ETravelType::TRAVEL_Absolute);
+	//}
 }

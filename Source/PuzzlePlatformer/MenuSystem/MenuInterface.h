@@ -24,5 +24,5 @@ class PUZZLEPLATFORMER_API IMenuInterface
 public:
 	virtual void Host() = 0; // Pure virtual function, the children of this class SHOULD implement this function
 	virtual void Join(const FString& Address) = 0;
-
+	virtual void QuitGame() = 0;
 };
